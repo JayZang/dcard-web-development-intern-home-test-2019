@@ -57,7 +57,7 @@ interface RateLimitDictionaryData {
 /**
  * 向 Redis Server 取得對應 IP 之資料
  */
-async function getRedisDataByIp(ip: string): Promise<RateLimitDictionaryData> {
+function getRedisDataByIp(ip: string): Promise<RateLimitDictionaryData> {
     return new Promise((resolve, reject) => {
         client.hgetall(ip, (err, reply) => {
             if (err) {
@@ -79,7 +79,7 @@ async function getRedisDataByIp(ip: string): Promise<RateLimitDictionaryData> {
 /**
  * 向 Redis Server 設定對應 IP 之資料
  */
-async function setRedisDataByIp(ip: string, data: RateLimitDictionaryData) {
+function setRedisDataByIp(ip: string, data: RateLimitDictionaryData) {
     return new Promise((resolve, reject) => {
         const resetDate = data.resetDate;
 

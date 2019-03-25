@@ -21,6 +21,6 @@ app.use(rateLimiterMiddleware);
  */
 import * as homeControllers from "./controllers/home";
 
-app.get("/", homeControllers.home)
+app.get("/", homeControllers.home);
 
 export default app;
