@@ -21,4 +21,4 @@ npm install
 npm run build
 npm run start
 ```
-server 預設監聽 8080 Port : [127.0.0.1:8080](127.0.0.1:8080) .
+server 預設監聽 8080 Port : [127.0.0.1:8080](http://127.0.0.1:8080) .
