@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 /**
- * Middleware
+ * Global Middleware
  */
 import rateLimiterMiddleware from "./middlewares/rate-limiter";
 

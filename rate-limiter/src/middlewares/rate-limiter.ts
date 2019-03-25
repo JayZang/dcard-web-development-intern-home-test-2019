@@ -6,7 +6,11 @@ const duration = 60 * 60 * 1000;
 const limitCountPerHour = 1000;
 
 client.on("connect", () => {
-    console.log("Redis client connected1");
+    console.log("Redis client connected");
+});
+
+client.on("error", (err) => {
+    console.error(err.toString());
 });
 
 export default async (req: Request, res: Response, next: NextFunction) => {
