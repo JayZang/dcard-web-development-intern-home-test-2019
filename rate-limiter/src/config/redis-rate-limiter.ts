@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-const config = dotenv.config({ path: '.env' });
+const config = dotenv.config({ path: '.env.example' });
 
 export default {
     redisHost: config.parsed.REDIS_HOST,
