@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import redis from "redis";
+import rateLimiterConfig from "../config/redis-rate-limiter";
 
-const client = redis.createClient();
-const duration = 60 * 60 * 1000;
-const limitCountPerHour = 1000;
+const redisHost = rateLimiterConfig.redisHost;
+const redisPort = rateLimiterConfig.redisPort;
+const duration = rateLimiterConfig.duration;
+const limitCountPerDuration = rateLimiterConfig.limitCountPerDuration;
+const client = redis.createClient(redisPort, redisHost);
 
 client.on("connect", () => {
     console.log("Redis client connected");
@@ -15,35 +18,46 @@ client.on("error", (err) => {
 
 export default async (req: Request, res: Response, next: NextFunction) => {
     const ip = req.ip;
-    const data = await getDataByIp(ip);
-
-    data.count++;
-
-    setDataByIp(ip, data);
-
-    const remainingCount = limitCountPerHour - data.count < 0 ? 0 : limitCountPerHour - data.count;
+    const data = await getRedisDataByIp(ip);
     const resetDate = new Date(data.resetDate).toString();
 
-    res.setHeader("X-RateLimit-Remaining", remainingCount);
-    res.setHeader("X-RateLimit-Reset", resetDate);
-
-    // console.log(data);
-
-    if (data.count > limitCountPerHour) {
+    // 判斷 Request 次數是否已經大於等於每一時間區間內之最大數量
+    // 不用考慮 reset 時間是因為已在 Redis 做設置，超過 resetDate 會自動清除該筆資料
+    if (data.count >= limitCountPerDuration) {
+        res.setHeader("X-RateLimit-Remaining", 0);
+        res.setHeader("X-RateLimit-Reset", resetDate);
         res.status(429).send("Too Many Requests");
         return;
     }
 
+    // Request 次數加 1
+    data.count++;
+
+    // 資料更新回 Redis Server
+    setRedisDataByIp(ip, data);
+
+    // 計算剩餘次數
+    const remainingCount = limitCountPerDuration - data.count;
+
+    res.setHeader("X-RateLimit-Remaining", remainingCount);
+    res.setHeader("X-RateLimit-Reset", resetDate);
+
     next();
 };
 
+/**
+ * Redis key(IP) 對應之資料
+ */
 interface RateLimitDictionaryData {
     ip: string;
     count: number;
     resetDate: number;
 }
 
-async function getDataByIp(ip: string): Promise<RateLimitDictionaryData> {
+/**
+ * 向 Redis Server 取得對應 IP 之資料
+ */
+async function getRedisDataByIp(ip: string): Promise<RateLimitDictionaryData> {
     return new Promise((resolve, reject) => {
         client.hgetall(ip, (err, reply) => {
             if (err) {
@@ -62,7 +76,10 @@ async function getDataByIp(ip: string): Promise<RateLimitDictionaryData> {
     });
 }
 
-async function setDataByIp(ip: string, data: RateLimitDictionaryData) {
+/**
+ * 向 Redis Server 設定對應 IP 之資料
+ */
+async function setRedisDataByIp(ip: string, data: RateLimitDictionaryData) {
     return new Promise((resolve, reject) => {
         const resetDate = data.resetDate;
 
