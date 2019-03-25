@@ -10,7 +10,7 @@
 
 ## 建置
 
-### 先前條件
+### 前置條件
 - 已安裝好 node 及 npm
 - 開啟 Redis Server ( 使用預設設定 )
 
@@ -21,3 +21,4 @@ npm install
 npm run build
 npm run start
 ```
+server 預設監聽 8080 Port : [127.0.0.1:8080](127.0.0.1:8080) .
