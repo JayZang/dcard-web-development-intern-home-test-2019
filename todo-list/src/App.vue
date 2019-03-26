@@ -1,23 +1,49 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+  <div id="todo-list-app">
+    <div class="header">
+      <span>
+        Todo List
+      </span>
+    </div>
+    <TodoListContainer/>
   </div>
 </template>
 
 <script>
+import TodoListContainer from '@/components/TodoListContainer'
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    TodoListContainer
+  }
 }
 </script>
 
 <style>
-#app {
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#todo-list-app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  background-color: #f1f8ff;
+}
+
+#todo-list-app .header {
+  text-align: center;
+  padding: 20px 30px;
+  background-color: #24292e;
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
 }
 </style>
