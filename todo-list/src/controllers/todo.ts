@@ -1,6 +1,17 @@
 import {Request, Response} from "express";
-import mongoose from "mongoose";
+import { Todo, TodoModel } from "../models/todos";
 
-export const newPost = (req: Request, res: Response) => {
+export const getTodo = async (req: Request, res: Response) => {
+  const todo = await Todo.find();
+  // console.log(todo.ip);
+  res.send(todo);
+}
 
+export const newTodo = (req: Request, res: Response) => {
+  const todo = new Todo({
+    content: '123',
+    isDone: false
+  });
+
+  todo.save();
 }
