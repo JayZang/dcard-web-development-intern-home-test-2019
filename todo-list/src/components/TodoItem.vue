@@ -1,7 +1,7 @@
 <template>
-  <div class="todo-item" 
+  <div class="todo-item"
     :class="{ 'delete-animation': isDeleting }"
-    :data-id="todo.id" 
+    :data-id="todo.id"
     @click="isOpenPanel = isEditMode ? false : !isOpenPanel">
     <div class="done-sign" v-if="!isEditMode && todo.isDone">
       <i class="fas fa-check"></i>
@@ -21,7 +21,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { setTimeout } from 'timers';
+import { setTimeout } from 'timers'
 
 export default {
   name: 'TodoItem',
@@ -40,7 +40,7 @@ export default {
     ...mapActions(['editTodo', 'deleteTodo', 'changeTodoFlag']),
     changeTodoFlagEvent () {
       const todo = this.todo
-      this.changeTodoFlag ({
+      this.changeTodoFlag({
         id: todo.id,
         isDone: !todo.isDone
       })
@@ -192,7 +192,6 @@ export default {
 .todo-item button.todo-edit-submit {
   background-color: #41b883;
 }
-
 
 .todo-item button.todo-edit-close {
   background-color: #dd4b39;

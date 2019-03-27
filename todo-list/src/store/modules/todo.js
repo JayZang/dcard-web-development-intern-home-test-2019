@@ -12,10 +12,10 @@ import crypto from 'crypto'
 const sha256 = crypto.createHash('sha256')
 
 export class Todo {
-  constructor(content) {
+  constructor (content) {
     const timestamp = new Date().valueOf()
 
-    sha256.update(`todo_${timestamp}`);
+    sha256.update(`todo_${timestamp}`)
 
     this.id = sha256.digest('hex')
     this.content = content
@@ -25,14 +25,14 @@ export class Todo {
 
 const state = {
   todoItems: [
-    new Todo('倒垃圾'), 
-    new Todo('掃地'), 
-    new Todo('洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶'), 
-    new Todo('洗馬桶'), 
-    new Todo('洗馬桶'), 
-    new Todo('洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶'), 
-    new Todo('洗馬桶'), 
-    new Todo('洗馬桶'), 
+    new Todo('倒垃圾'),
+    new Todo('掃地'),
+    new Todo('洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶'),
+    new Todo('洗馬桶'),
+    new Todo('洗馬桶'),
+    new Todo('洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶'),
+    new Todo('洗馬桶'),
+    new Todo('洗馬桶'),
     new Todo('洗馬桶')
   ]
 }
@@ -44,15 +44,16 @@ const getters = {
   doneTodos (state) {
     return state.todoItems.filter(item => item.isDone === true)
   },
-  nonDoneTodos() {
+  nonDoneTodos () {
     return state.todoItems.filter(item => item.isDone === false)
   }
 }
 
 const actions = {
   createTodo ({ commit }, content) {
-    if (!content || typeof content !== 'string')
+    if (!content || typeof content !== 'string') {
       return false
+    }
 
     let todo = new Todo(content)
     commit('pushTodo', todo)
@@ -85,7 +86,7 @@ const actions = {
   },
   deleteDoneTodos ({ commit }) {
     commit('deleteDoneTodos')
-  },
+  }
 }
 
 const mutations = {

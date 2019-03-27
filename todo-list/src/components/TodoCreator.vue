@@ -21,7 +21,7 @@ export default {
       const content = this.content.trim()
 
       if (!content) return
-      
+
       this.createTodo(content)
       this.content = ''
     }
@@ -60,5 +60,3 @@ export default {
   background-color: #339af0;
 }
 </style>
-
-

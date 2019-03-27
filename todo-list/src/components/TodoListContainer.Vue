@@ -61,7 +61,7 @@ export default {
     ...mapActions(['deleteDoneTodos']),
     deleteDoneTodosEvent () {
       const result = confirm('確定要刪除已完成 Todo ?')
-      
+
       if (!result) return
 
       this.deleteDoneTodos()
