@@ -1,34 +1,40 @@
 /**
  * todo object type:
  * todo: {
+ *  id: string,
  *  content: String,
  *  isDone: Boolean
  * }
  */
 
+import crypto from 'crypto'
+
+const sha256 = crypto.createHash('sha256')
+
+export class Todo {
+  constructor(content) {
+    const timestamp = new Date().valueOf()
+
+    sha256.update(`todo_${timestamp}`);
+
+    this.id = sha256.digest('hex')
+    this.content = content
+    this.isDone = false
+  }
+}
+
 const state = {
-  todoItems: [{
-    content: '倒垃圾',
-    isDone: false
-  }, {
-    content: '掃地',
-    isDone: true
-  }, {
-    content: '洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶',
-    isDone: true
-  }, {
-    content: '洗馬桶',
-    isDone: true
-  }, {
-    content: '洗馬桶',
-    isDone: true
-  }, {
-    content: '洗馬桶',
-    isDone: true
-  }, {
-    content: '洗馬桶',
-    isDone: true
-  }]
+  todoItems: [
+    new Todo('倒垃圾'), 
+    new Todo('掃地'), 
+    new Todo('洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶'), 
+    new Todo('洗馬桶'), 
+    new Todo('洗馬桶'), 
+    new Todo('洗馬桶洗馬桶洗馬桶洗馬桶洗馬桶'), 
+    new Todo('洗馬桶'), 
+    new Todo('洗馬桶'), 
+    new Todo('洗馬桶')
+  ]
 }
 
 const getters = {
@@ -51,19 +57,49 @@ const actions = {
     let todo = new Todo(content)
     commit('pushTodo', todo)
     return todo
+  },
+  editTodo({ commit }, param) {
+    let {
+      id,
+      content
+    } = param
+
+    if (!id || !content) return
+
+    commit('editTodoById', param)
+  },
+  deleteTodo({ commit }, id) {
+    if (!id) return
+
+    commit('deleteTodoById', id)
+  },
+  changeTodoFlag({ commit }, param) {
+    let {
+      id,
+      isDone
+    } = param
+
+    if (!id || isDone === undefined) return
+    console.log(isDone)
+    commit('changeTodoFlagById', param)
   }
 }
 
 const mutations = {
   pushTodo (state, todo) {
-    state.todoItems.push(todo)
-  }
-}
-
-export class Todo {
-  constructor (content) {
-    this.content = content
-    this.isDone = false
+    state.todoItems.unshift(todo)
+  },
+  editTodoById (state, param) {
+    const todo = state.todoItems.find(item => item.id === param.id)
+    todo.content = param.content
+  },
+  deleteTodoById (state, id) {
+    const index = state.todoItems.findIndex(item => item.id === id)
+    state.todoItems.splice(index, 1)
+  },
+  changeTodoFlagById (state, param) {
+    const todo = state.todoItems.find(item => item.id === param.id)
+    todo.isDone = param.isDone
   }
 }
 

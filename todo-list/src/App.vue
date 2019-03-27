@@ -24,7 +24,7 @@ export default {
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  background-color: #f1f8ff;
 }
 
 #todo-list-app {
@@ -32,10 +32,8 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  max-width: 1200px;
   margin: 0 auto;
   height: 100%;
-  background-color: #f1f8ff;
 }
 
 #todo-list-app .header {
