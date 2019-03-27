@@ -11,3 +11,15 @@
 - [x] 清除已完成的 todos
 - [x] Optional：RWD
 - [ ] Optional：測試
+
+## 啟用 Hot Reload 開發環境
+
+### 前置條件
+- 已安裝好 node 及 npm
+
+### 建置開發環境專案
+```bash
+npm install
+npm run dev
+```
+Webpack hot reload server 預設監聽 8080 port : [127.0.0.1:8080](http://127.0.0.1:8080)
