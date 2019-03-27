@@ -8,7 +8,7 @@
       <button class="todo-edit-close" v-if="isEditMode" @click.stop="editTodoCloseEvent">取消</button>
     </div>
     <textarea class="todo-item-content" cols="30" rows="10" v-model="todoContent" :disabled="!isEditMode"></textarea>
-    <div class="todo-edit-panel" v-if="isOpenPanel">
+    <div class="todo-edit-panel" :class="{ show: isOpenPanel }">
       <button class="todo-edit-flag-btn" :class="{ done: todo.isDone }" @click.stop="changeTodoFlagEvent">{{ todo.isDone ? '未完成' : '完成'}}</button>
       <button class="todo-edit-edit-btn" @click="isEditMode = true">編輯</button>
       <button class="todo-edit-delete-btn" @click.stop="deleteTodo(todo.id)">刪除</button>
@@ -117,6 +117,12 @@ export default {
   justify-content: space-around;
   padding: 15px 0;
   box-sizing: border-box;
+  transform: translate3d(0px ,-50%, -600px) rotateX(-90deg);
+  transition: 600ms ease;
+}
+
+.todo-item .todo-edit-panel.show {
+  transform: translate3d(0, 0, 0) rotateX(0);
 }
 
 .todo-item .todo-edit-panel button {

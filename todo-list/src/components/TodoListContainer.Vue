@@ -2,6 +2,7 @@
   <div id="todo-list-container">
     <div class="todo-list-container-header">
       <TodoCreator class="todo-creator"/>
+      <button id="delete-done-todo-btn" @click.stop="deleteDoneTodosEvent">刪除已完成 Todo</button>
       <select id="todo-flag-selector" v-model="todoFilter">
         <option :value="TodoFlagEnum.ll" disabled selected style="text-align: center">--- 狀態過濾 ---</option>
         <option :value="TodoFlagEnum.all">全部</option>
@@ -57,10 +58,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['createTodo'])
-  },
-  mounted () {
-    console.log(this)
+    ...mapActions(['deleteDoneTodos']),
+    deleteDoneTodosEvent () {
+      const result = confirm('確定要刪除已完成 Todo ?')
+      
+      if (!result) return
+
+      this.deleteDoneTodos()
+    }
   }
 }
 </script>
@@ -71,22 +76,38 @@ export default {
 }
 
 #todo-list-container .todo-list-container-header {
-  padding-left: 10px;
-  padding-right: 10px;
   margin-bottom: 15px;
   display: flex;
+  flex-wrap: wrap;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
 }
 
 #todo-list-container .todo-creator {
-  max-width: 300px;
+  max-width: 400px;
   flex-grow: 1;
+  margin-right: 10px;
+}
+
+#delete-done-todo-btn {
+  margin-left: auto;
+  margin-right: 10px;
+  border-radius: 5px;
+  background-color: #41b883;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: white;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  cursor: pointer;
 }
 
 #todo-flag-selector {
   padding: 5px;
   border-radius: 3px;
   outline: none;
-  margin-left: auto;
 }
 
 #todo-list-container .todo-list-container-content {
@@ -106,8 +127,18 @@ export default {
 }
 
 @media (max-width: 600px) {
+  #todo-list-container .todo-list-container-header {
+    justify-content: center;
+  }
+
   #todo-list-container .todo-creator {
     max-width: 100%;
+    width: 100%;
+    margin: 0 0 10px;
+  }
+
+  #delete-done-todo-btn {
+    margin-left: 0;
   }
 
   #todo-list-container .todo-item {
@@ -115,7 +146,7 @@ export default {
   }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 500px) {
   #todo-list-container .todo-item {
     width: calc(100% - 20px);
     max-width: none;

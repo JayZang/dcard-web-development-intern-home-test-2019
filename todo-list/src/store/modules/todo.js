@@ -58,7 +58,7 @@ const actions = {
     commit('pushTodo', todo)
     return todo
   },
-  editTodo({ commit }, param) {
+  editTodo ({ commit }, param) {
     let {
       id,
       content
@@ -68,12 +68,12 @@ const actions = {
 
     commit('editTodoById', param)
   },
-  deleteTodo({ commit }, id) {
+  deleteTodo ({ commit }, id) {
     if (!id) return
 
     commit('deleteTodoById', id)
   },
-  changeTodoFlag({ commit }, param) {
+  changeTodoFlag ({ commit }, param) {
     let {
       id,
       isDone
@@ -82,7 +82,10 @@ const actions = {
     if (!id || isDone === undefined) return
     console.log(isDone)
     commit('changeTodoFlagById', param)
-  }
+  },
+  deleteDoneTodos ({ commit }) {
+    commit('deleteDoneTodos')
+  },
 }
 
 const mutations = {
@@ -100,6 +103,9 @@ const mutations = {
   changeTodoFlagById (state, param) {
     const todo = state.todoItems.find(item => item.id === param.id)
     todo.isDone = param.isDone
+  },
+  deleteDoneTodos (state) {
+    state.todoItems = state.todoItems.filter(item => !item.isDone)
   }
 }
 
