@@ -2,6 +2,12 @@
   <div id="todo-list-container">
     <div class="todo-list-container-header">
       <TodoCreator class="todo-creator"/>
+      <select id="todo-flag-selector" v-model="todoFilter">
+        <option :value="TodoFlagEnum.ll" disabled selected style="text-align: center">--- 狀態過濾 ---</option>
+        <option :value="TodoFlagEnum.all">全部</option>
+        <option :value="TodoFlagEnum.done">已完成</option>
+        <option :value="TodoFlagEnum.nonDone">未完成</option>
+      </select>
     </div>
     <div class="todo-list-container-content">
       <TodoItem class="todo-item" v-for="todo in todos" :key="todo.id" :todo="todo"></TodoItem>
@@ -20,10 +26,34 @@ export default {
     TodoCreator,
     TodoItem
   },
+  data () {
+    const TodoFlagEnum = {
+      all: 'all',
+      done: 'done',
+      nonDone: 'Done'
+    }
+
+    return {
+      TodoFlagEnum,
+      todoFilter: TodoFlagEnum.all
+    }
+  },
   computed: {
     ...mapGetters(['allTodos', 'doneTodos', 'nonDoneTodos']),
     todos () {
-      return this.allTodos
+      switch (this.todoFilter) {
+        case this.TodoFlagEnum.all:
+          return this.allTodos
+
+        case this.TodoFlagEnum.done:
+          return this.doneTodos
+
+        case this.TodoFlagEnum.nonDone:
+          return this.nonDoneTodos
+
+        default:
+          return this.allTodos
+      }
     }
   },
   methods: {
@@ -44,10 +74,19 @@ export default {
   padding-left: 10px;
   padding-right: 10px;
   margin-bottom: 15px;
+  display: flex;
 }
 
 #todo-list-container .todo-creator {
   max-width: 300px;
+  flex-grow: 1;
+}
+
+#todo-flag-selector {
+  padding: 5px;
+  border-radius: 3px;
+  outline: none;
+  margin-left: auto;
 }
 
 #todo-list-container .todo-list-container-content {
