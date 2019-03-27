@@ -1,5 +1,8 @@
 <template>
-  <div class="todo-item" :data-id="todo.id" @click="isOpenPanel = isEditMode ? false : !isOpenPanel">
+  <div class="todo-item" 
+    :class="{ 'delete-animation': isDeleting }"
+    :data-id="todo.id" 
+    @click="isOpenPanel = isEditMode ? false : !isOpenPanel">
     <div class="done-sign" v-if="!isEditMode && todo.isDone">
       <i class="fas fa-check"></i>
     </div>
@@ -11,13 +14,14 @@
     <div class="todo-edit-panel" :class="{ show: isOpenPanel }">
       <button class="todo-edit-flag-btn" :class="{ done: todo.isDone }" @click.stop="changeTodoFlagEvent">{{ todo.isDone ? '未完成' : '完成'}}</button>
       <button class="todo-edit-edit-btn" @click="isEditMode = true">編輯</button>
-      <button class="todo-edit-delete-btn" @click.stop="deleteTodo(todo.id)">刪除</button>
+      <button class="todo-edit-delete-btn" @click.stop="deleteTodoEvent">刪除</button>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import { setTimeout } from 'timers';
 
 export default {
   name: 'TodoItem',
@@ -25,6 +29,7 @@ export default {
     return {
       isOpenPanel: false,
       isEditMode: false,
+      isDeleting: false,
       todoContent: ''
     }
   },
@@ -53,6 +58,13 @@ export default {
     editTodoCloseEvent () {
       this.todoContent = this.todo.content
       this.isEditMode = false
+    },
+    deleteTodoEvent () {
+      this.isDeleting = true
+      const todoId = this.todo.id
+      setTimeout(() => {
+        this.deleteTodo(todoId)
+      }, 300)
     }
   },
   mounted () {
@@ -77,6 +89,10 @@ export default {
 .todo-item:hover {
   transform: translateY(-5px);
   box-shadow: 5px 8px 5px rgba(0, 0, 0, 0.4);
+}
+
+.todo-item.delete-animation {
+  transform: scale(0.01);
 }
 
 .todo-item .done-sign {

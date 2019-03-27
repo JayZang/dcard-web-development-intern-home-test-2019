@@ -113,6 +113,7 @@ export default {
 #todo-list-container .todo-list-container-content {
   display: flex;
   flex-flow: wrap;
+  align-items: center;
 }
 
 #todo-list-container .todo-item {
