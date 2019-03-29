@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-// github api wrapper router
+// github proxy service
 app.use("/github", githubController);
 
 export default app;

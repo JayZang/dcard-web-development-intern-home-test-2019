@@ -6,67 +6,68 @@ const router = express.Router();
 const githubToken = githubConfig.token;
 const githubEndpoint = githubConfig.endpoint;
 const graphqlClient = new GraphQLClient(githubEndpoint, {
-    headers: {
-        Authorization: `bearer ${githubToken}`
-    }
+  headers: {
+    Authorization: `bearer ${githubToken}`
+  }
 });
 
 export async function getOwnTeamRepo(req: Request, res: Response) {
-    const teamName = req.params.teamName || '';
-    const orgLogin = req.params.orgLogin || '';
-    const query = `
-        query getOwnTeamRepos($teamName: String!) { 
-            viewer {
+  const teamName = req.params.teamName || '';
+  const orgLogin = req.params.orgLogin || '';
+  const query = `
+    query getOwnTeamRepos($teamName: String!) { 
+      viewer {
+        name
+        organizations(first: 10) {
+          totalCount
+          nodes {
+            name
+            login
+            teams(first: 100, query: $teamName) {
+              totalCount
+              nodes {
                 name
-                organizations(first: 10) {
-                    totalCount
-                    nodes {
-                        name
-                        login
-                        teams(first: 100, query: $teamName) {
-                            totalCount
-                            nodes {
-                                name
-                                repositories(first: 100) {
-                                    totalCount
-                                    nodes {
-                                        name
-                                    }
-                                }
-                            }
-                        }
-                    }
+                repositories(first: 100) {
+                  totalCount
+                  nodes {
+                    name
+                    id
+                  }
                 }
+              }
             }
+          }
         }
-    `;
-
-    const variables = {
-        teamName
+      }
     }
+  `;
 
-    const result: any = await graphqlClient.request(query, variables)
-        .catch(err => {
-            return res.status(500).send(err);
-        })
+  const variables = {
+    teamName
+  }
 
-    let repoList = [];
-    result.viewer.organizations.nodes.forEach(org => {
-        if (org.login !== orgLogin) return
-        org.teams.nodes.forEach(team => {
-            if (team.name !== teamName) return
-
-            repoList = team.repositories.nodes.map(repo => repo.name)
-        })
+  const result: any = await graphqlClient.request(query, variables)
+    .catch(err => {
+      return res.status(500).send(err);
     })
 
-    res.json({
-        organization: orgLogin,
-        team: teamName,
-        repositories: repoList
+  let repoList = [];
+  result.viewer.organizations.nodes.forEach(org => {
+    if (org.login !== orgLogin) return
+    org.teams.nodes.forEach(team => {
+      if (team.name !== teamName) return
+
+      repoList = team.repositories.nodes
     })
+  })
+
+  res.json({
+    organization: orgLogin,
+    team: teamName,
+    repositories: repoList
+  })
 }
 
-router.get("/own-team-repo/:orgLogin/:teamName", getOwnTeamRepo)
+router.get("/team-repo/:orgLogin/:teamName", getOwnTeamRepo)
 
 export default router
